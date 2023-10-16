@@ -29,6 +29,8 @@ class ColectivoTest extends TestCase{
         $saldoini = 1000;
         $tarjeta->cargarDinero($saldoini);
         
+        $cole->tiempo->avanzar(7*60*60);
+
         //Primer pago (aceptado)
         $cole->pagarCon($tarjeta, true);
         $this->assertEquals($tarjeta->saldo, $saldoini - $cole->costo/2);
@@ -65,6 +67,8 @@ class ColectivoTest extends TestCase{
 
         $saldoini = 1000;
         $tarjeta->cargarDinero($saldoini);
+
+        $cole->tiempo->avanzar(7*60*60);
 
         $cole->pagarCon($tarjeta);
         $this->assertEquals($tarjeta->saldo, $saldoini);
@@ -114,7 +118,7 @@ class ColectivoTest extends TestCase{
         $cole->pagarCon($tarjeta);
         $this->assertEquals($tarjeta->saldo, 880);
         
-        //Pagando con 
+        //Pagando con 60 usos
         $tarjeta->usos = 60;
         $cole->pagarCon($tarjeta);
         $this->assertEquals($tarjeta->saldo, 880-($cole->costo)*0.8);
@@ -123,6 +127,22 @@ class ColectivoTest extends TestCase{
         $cole->pagarCon($tarjeta);
         $this->assertEquals($tarjeta->saldo, 784-($cole->costo)*0.75);
 
+    }
+
+    public function testPagarConHorario(){
+        $tarjeta = new FranquiciaParcial();
+        $cole = new Colectivo(102, new TiempoFalso());
+        
+        $tarjeta->cargarDinero(1000);
+
+        //Pago con franquicia sin estar en la franja horaria permitida
+        $cole->pagarCon($tarjeta, true);
+        $this->assertEquals($tarjeta->saldo, 1000 - $cole->costo);
+        
+        //Pago con franquicia estando en el horario permitido
+        $cole->tiempo->avanzar(60*60*7);
+        $cole->pagarCon($tarjeta, true);
+        $this->assertEquals($tarjeta->saldo, 880 - 60);
     }
 
 }

@@ -43,6 +43,12 @@ class Colectivo{
         if($usos <= 79) return $tarjeta->saldo - $this->costo * 0.8;
         else return $tarjeta->saldo - $this->costo * 0.75;
     }
+
+    public function chequeoHorario(){
+        $weekday = date("w", $this->tiempo->time());
+        $hour = date("H", $this->tiempo->time());
+        return ($weekday>= 1 && $weekday <= 5 && $hour >= 6 && $hour <= 21);
+    }
     /*
         El argumento $contemplo_beneficio es equivalente a cuando el conductor del colectivo presiona el botón
         para cobrar el boleto teniendo en cuenta el beneficio o la franquicia de la tarjeta. De esta forma si una persona
@@ -52,7 +58,7 @@ class Colectivo{
     */
 
     public function pagarCon($tarjeta, $contemplo_beneficio = false){
-        if($tarjeta instanceof FranquiciaParcial){
+        if($tarjeta instanceof FranquiciaParcial && $this->chequeoHorario()){
             if($contemplo_beneficio){
                 if($this->chequeoMedio($tarjeta)){
                     $nuevosaldo = $tarjeta->saldo - $this->costo/2;
@@ -70,7 +76,7 @@ class Colectivo{
             }
         }
         /*--------------------------------------------------------------------------------*/
-        else if($tarjeta instanceof FranquiciaCompleta){
+        else if($tarjeta instanceof FranquiciaCompleta && $this->chequeoHorario()){
             if($this->chequeoCompleto($tarjeta)){
                 $nuevosaldo = $tarjeta->saldo;
                 $tarjeta->cantboletos--;
