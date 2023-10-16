@@ -6,7 +6,9 @@ class ColectivoInterurbano extends Colectivo{
     
     public function __construct($linea){
         Colectivo::__construct($linea);
-        $this->costo = 184;
+        if (strpos($linea, "Expreso") === 0 || strpos($linea, "35/9") === 0 || strpos($linea, "M") === 0) {
+            $this->costo = 184;
+        }
     }
 
 }

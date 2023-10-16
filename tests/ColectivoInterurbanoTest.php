@@ -6,15 +6,17 @@ use PHPUnit\Framework\TestCase;
 
 class ColectivoInterurbanoTest extends TestCase
 {
-    public function testCosto()
-    {
-        $colectivo = new ColectivoInterurbano('Linea 1');
-        $this->assertEquals(184, $colectivo->getCosto());
-    }
+    public function testCostoBoletoInterurbano() {
+        $lineasInterurbanas = [
+            "Expreso",
+            "35/9",
+            "M"
+        ];
 
-    public function testLinea()
-    {
-        $colectivo = new ColectivoInterurbano('Linea 1');
-        $this->assertEquals('Linea 1', $colectivo->getLinea());
+        foreach ($lineasInterurbanas as $linea) {
+            $colectivo = new ColectivoInterurbano($linea);
+            $this->assertEquals(184, $colectivo->costo);
+        }
     }
 }
+
