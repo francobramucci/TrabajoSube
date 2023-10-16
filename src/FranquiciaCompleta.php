@@ -5,12 +5,10 @@ namespace TrabajoSube;
 class FranquiciaCompleta extends Tarjeta{
     
     public $cantboletos;
-    public $dia;
 
     public function __construct(){
         Tarjeta::__construct();
         $this->cantboletos = 2;
-        $this->dia = date("d", time());
     }
     
     public function renovarBoletos($tiempo){
