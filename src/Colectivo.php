@@ -12,6 +12,10 @@ class Colectivo{
         $this->tiempo = ($tiempo !== null) ? $tiempo : new Tiempo();
     }
 
+    public function getCosto(){
+        return $this->costo;
+    }
+
     public function getLinea(){
         return $this->linea;
     }
