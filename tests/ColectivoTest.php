@@ -104,4 +104,25 @@ class ColectivoTest extends TestCase{
     }
 
 
+    public function testUsoFrecuente(){
+        $tarjeta = new Tarjeta();
+        $cole = new Colectivo(102, new TiempoFalso());
+
+        $tarjeta->cargarDinero(1000);
+        
+        //Pagando sin ningún uso
+        $cole->pagarCon($tarjeta);
+        $this->assertEquals($tarjeta->saldo, 880);
+        
+        //Pagando con 
+        $tarjeta->usos = 60;
+        $cole->pagarCon($tarjeta);
+        $this->assertEquals($tarjeta->saldo, 880-($cole->costo)*0.8);
+        
+        $tarjeta->usos = 90;
+        $cole->pagarCon($tarjeta);
+        $this->assertEquals($tarjeta->saldo, 784-($cole->costo)*0.75);
+
+    }
+
 }

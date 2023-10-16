@@ -8,7 +8,6 @@ class FranquiciaParcial extends Tarjeta{
         Tarjeta::__construct();
         $this->ultimopago = null;
         $this->cantboletos = 4;
-        $this->dia = date("d", time());
     }
     //Modificar esta funcion para que tambien funcione con TiempoFalso
     public function renovarBoletos($tiempo){
@@ -18,7 +17,6 @@ class FranquiciaParcial extends Tarjeta{
             $this->dia = $dia;
         }
     }
-    public $dia;
     public $ultimopago;
     public $cantboletos;
 

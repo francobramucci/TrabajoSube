@@ -19,10 +19,16 @@ class Tarjeta{
     public $maxsaldo = 6600;
     public $id;
     public $excedente;
+    public $usos;
+    public $dia;
+    public $mes;
 
     public function __construct($id = 0){
         $this->saldo = 0;
         $this->id = $id;
+        $this->usos = 0;
+        $this->dia = date("d", time());
+        $this->mes = date("m", time());
     }
 
     public function cargarDinero($monto){
@@ -44,6 +50,17 @@ class Tarjeta{
             echo "ERROR. Ingrese un monto válido";
         }
         
+    }
+
+    public function actualizarDias($mes){
+        if($mes != $this->mes){
+            $this->mes = $mes;
+            $this->usos = 0;
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
 }

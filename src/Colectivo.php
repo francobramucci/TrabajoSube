@@ -36,6 +36,13 @@ class Colectivo{
         $tarjeta->renovarBoletos($this->tiempo->time());
         return ($tarjeta->hayBoletos());
     }
+
+    public function establecerCostoFrec($tarjeta){
+        $usos = $tarjeta->usos;
+        if($usos <= 29) return $tarjeta->saldo - $this->costo;
+        if($usos <= 79) return $tarjeta->saldo - $this->costo * 0.8;
+        else return $tarjeta->saldo - $this->costo * 0.75;
+    }
     /*
         El argumento $contemplo_beneficio es equivalente a cuando el conductor del colectivo presiona el botón
         para cobrar el boleto teniendo en cuenta el beneficio o la franquicia de la tarjeta. De esta forma si una persona
@@ -45,16 +52,21 @@ class Colectivo{
     */
 
     public function pagarCon($tarjeta, $contemplo_beneficio = false){
-        if($tarjeta instanceof FranquiciaParcial && $contemplo_beneficio){
-            if($this->chequeoMedio($tarjeta)){
-                $nuevosaldo = $tarjeta->saldo - $this->costo/2;
-                if($nuevosaldo >= $tarjeta->minsaldo){
-                    $tarjeta->ultimopago = $this->tiempo->time();
-                    $tarjeta->cantboletos--;
+        if($tarjeta instanceof FranquiciaParcial){
+            if($contemplo_beneficio){
+                if($this->chequeoMedio($tarjeta)){
+                    $nuevosaldo = $tarjeta->saldo - $this->costo/2;
+                    if($nuevosaldo >= $tarjeta->minsaldo){
+                        $tarjeta->ultimopago = $this->tiempo->time();
+                        $tarjeta->cantboletos--;
+                    }
                 }
+                else{
+                    return false;
+                } 
             }
             else{
-                return false;
+                $nuevosaldo = $tarjeta->saldo - $this->costo;
             }
         }
         /*--------------------------------------------------------------------------------*/
@@ -70,7 +82,20 @@ class Colectivo{
         /*--------------------------------------------------------------------------------*/
 
         else{
-            $nuevosaldo = $tarjeta->saldo - $this->costo;
+            $mes = date("m", $this->tiempo->time());
+            
+            if($tarjeta->actualizarDias($mes)){
+                $nuevosaldo = $tarjeta->saldo - $this->costo;
+            }
+            else{
+                $nuevosaldo = $this->establecerCostoFrec($tarjeta);
+                $hoy = date("d",$this->tiempo->time());
+                if(1 <= $hoy && $hoy <= 30){
+                    if ($nuevosaldo >= $tarjeta->minsaldo){
+                        $tarjeta->usos++;
+                    }
+                }
+            }
         }
         /*--------------------------------------------------------------------------------*/
         
